@@ -5,6 +5,7 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import java.io.File
 import java.math.BigDecimal
+import kotlin.reflect.KFunction
 
 class ConvertersTest : StringSpec({
 
@@ -18,11 +19,25 @@ class ConvertersTest : StringSpec({
 
     "author should be parsed" {
         val excelReader = File(this::class.java.getResource("/test.xlsx").toURI()).excelReader()
-        excelReader.parse(Author::class.java)
+        excelReader.parse(Author::class.java).apply {
+            Author::getBirth column 3
+            Author::setName column 2
+            Author::setTitle column 1
+
+        }
+
+        excelReader.parse(Book::class.java).apply {
+            Author::getBirth column 3
+            Author::setName column 2
+            Author::setTitle column 1
+
+        }
 
         val authors = Author::class.java from excelReader
     }
 })
+
+
 
 
 
